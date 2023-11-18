@@ -10,21 +10,35 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/getHotels",(req,res)=>{
+    console.log(req.body)
     // need to get address , arrival date, departure date.
-    geoCode("1100 west corral ave apt 76",(err,data)=>{
+    geoCode(req.body.searchTerm,(err,data)=>{
+        console.log(req.body)
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = currentDate.getDate().toString().padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        console.log(formattedDate);
+
+        const formattedNextDate = `${year}-${month}-${Number(day)+1}`;
+
+        console.log(formattedNextDate)
         if(err){
             console.log("Error",err)
         }
+        
         else{
-            getHotels(data.latitude,data.longitude,"2023-11-15","2023-11-20")
+            getHotels(data.latitude,data.longitude,formattedDate,formattedNextDate)
             .then((data)=>{
                 Hotel.create({hotels:data.data.result,name:"Testing data"})
                 .then((res)=>console.log("success"))
                 .catch((err)=>console.log("Error in saving hotels",err))
-
+                console.log(data)
                 res.status(200).json({
                     status:"Success",
-                    data:data.data.result
+                    data:data
                 })
             })
             .catch((err)=>{
