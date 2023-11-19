@@ -16,7 +16,7 @@ async function getHotels(latitude,longitude,arrival,departure){
             currency_code: 'USD'
         },
         headers: {
-            'X-RapidAPI-Key': '549338403fmsh72e852f8489002dp184afbjsna0359def5579',
+            'X-RapidAPI-Key': '48d3a72e6emshad128265685d312p1abd06jsna1837eaefb55',
             'X-RapidAPI-Host': 'booking-com15.p.rapidapi.com'
         }
     };
