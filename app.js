@@ -10,21 +10,18 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/getHotels",(req,res)=>{
-    console.log(req.body)
     // need to get address , arrival date, departure date.
     geoCode(req.body.searchTerm,(err,data)=>{
-        console.log(req.body)
+
         const currentDate = new Date();
         const year = currentDate.getFullYear();
         const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
         const day = currentDate.getDate().toString().padStart(2, '0');
 
         const formattedDate = `${year}-${month}-${day}`;
-        console.log(formattedDate);
-
         const formattedNextDate = `${year}-${month}-${Number(day)+1}`;
 
-        console.log(formattedNextDate)
+
         if(err){
             console.log("Error",err)
         }
@@ -35,7 +32,6 @@ app.use("/getHotels",(req,res)=>{
                 Hotel.create({hotels:data.data.result,name:"Testing data"})
                 .then((res)=>console.log("success"))
                 .catch((err)=>console.log("Error in saving hotels",err))
-                console.log(data)
                 res.status(200).json({
                     status:"Success",
                     data:data
@@ -52,7 +48,6 @@ app.use("/getHotels",(req,res)=>{
 })
 
 app.use("/getHotelDetails",async (req,res)=>{
-    console.log("posted",req.body)
     if(!(req.body.arrival && req.body.departure && req.body.id)){
         console.log("error")
     }
@@ -66,7 +61,6 @@ app.use("/getHotelDetails",async (req,res)=>{
     else{
         getHotelDetails(req.body.arrival,req.body.departure,req.body.id)
         .then((data)=>{
-            console.log("data fetched from the server",data.data)
             res.status(200).json({
                 status:"Success",
                 Hotel_data:data
