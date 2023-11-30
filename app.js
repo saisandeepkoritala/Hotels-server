@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/getHotels",(req,res)=>{
-    // need to get address , arrival date, departure date.
+    
     geoCode(req.body.searchTerm,(err,data)=>{
 
         const currentDate = new Date();
@@ -19,11 +19,26 @@ app.use("/getHotels",(req,res)=>{
         const day = currentDate.getDate().toString().padStart(2, '0');
 
         const formattedDate = `${year}-${month}-${day}`;
-        const formattedNextDate = `${year}-${month}-${Number(day)+1}`;
+        
 
+        // Get the current date
+
+        // Calculate the next date
+        const nextDate = new Date(currentDate);
+        nextDate.setDate(currentDate.getDate() + 1);
+
+        // Format the next date as "YYYY-MM-DD"
+        const formattedNextDate = nextDate.toISOString().split('T')[0];
+
+
+        // next day of nov 30 would be 31 , so invalid ,need to fix it
 
         if(err){
             console.log("Error",err)
+            res.status(400).json({
+                status:"Fail",
+                message:"Address cant be fetched"
+            })
         }
         
         else{
@@ -34,12 +49,13 @@ app.use("/getHotels",(req,res)=>{
                 .catch((err)=>console.log("Error in saving hotels",err))
                 res.status(200).json({
                     status:"Success",
+                    message:"0",
                     data:data
                 })
             })
             .catch((err)=>{
                 res.status(400).json({
-                    status:"Success",
+                    status:"Fail",
                     data
                 })
             })
@@ -50,14 +66,11 @@ app.use("/getHotels",(req,res)=>{
 app.use("/getHotelDetails",async (req,res)=>{
     if(!(req.body.arrival && req.body.departure && req.body.id)){
         console.log("error")
+        res.status(400).json({
+            status:"Fail",
+            message:"Need required fields"
+        })
     }
-    // else{
-    //     const values= await Hotel.findOne({name:"Testing data"})
-    //     res.status(200).json({
-    //             status:"Success",
-    //                 Hotel_data:values
-    //             })
-    //     }
     else{
         getHotelDetails(req.body.arrival,req.body.departure,req.body.id)
         .then((data)=>{

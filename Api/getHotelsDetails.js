@@ -12,7 +12,7 @@ async function getHotelsDetails(arrival,departure,id){
             children_age: '1,17',
             room_qty: '1',
             languagecode: 'en-us',
-            currency_code: 'EUR'
+            currency_code: 'USD'
         },
         headers: {
             'X-RapidAPI-Key': '48d3a72e6emshad128265685d312p1abd06jsna1837eaefb55',
